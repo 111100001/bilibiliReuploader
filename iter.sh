@@ -12,6 +12,6 @@ id="$(echo "$line" | sed -E 's|.*/video/([^/?]+).*|\1|')"
 
   cd "$id"
    
-  tmux new-session -d -s "$id" "yt-dlp -s "$line"" 
+  tmux new-session  -s "$id" "yt-dlp -s "$line"" 
   cd ..  
 #done

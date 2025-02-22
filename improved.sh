@@ -6,7 +6,7 @@ counter=0
 while IFS= read -r line1 && IFS= read -r line2 && IFS= read -r line3 && \
 IFS= read -r line4 && IFS= read -r line5 && IFS= read -r line6 && \
 IFS= read -r line7 && IFS= read -r line8 && \
-IFS= read -r line9 && IFS= read -r line10 && IFS= read -r line11; do
+IFS= read -r line9 && IFS= read -r line10 && IFS= read -r line11 ; do
     ((counter++))
     
     dir="./dirs/$counter"

@@ -32,7 +32,7 @@ fi
 # Run your command here
 echo "Running command..."
 
- /home/ubuntu/.local/bin/youtube-bulk-upload --yt_client_secrets_file /home/ubuntu/client_secret.json --noninteractive
+ /home/ubuntu/.local/bin/youtube-bulk-upload --yt_client_secrets_file /home/ubuntu/client_secret.json --noninteractive | tee ./uploadout.log
 
 # Update the timestamp
 date +%s > "$TIMESTAMP_FILE"

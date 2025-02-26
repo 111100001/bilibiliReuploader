@@ -17,56 +17,66 @@ def fetch_video_data(url):
         print(f"Error decoding JSON: {e}")
         return None
 
-def process_urls(file_path):
-    with open(file_path, 'r') as file:
-        for line in file:
+def process_urls(item_name):
+    with open(item_name, 'r') as item_name:
+        for line in item_name:
             url = line.strip()  # Remove leading/trailing whitespace
-            video_data = fetch_video_data(url)
-            if video_data:
+            url_json_response = fetch_video_data(url)
+            if url_json_response:
                 # Extract video files and their durations from the JSON response
-                video_files = []
+                anthology_item_names_list = []
                 durations = []
-                for video in video_data['data']:
-                    video_files.append(video['part'])
-                    durations.append(video['duration'])
+                part_number= []
+                for anthology_item in url_json_response['data']:
+                    anthology_item_names_list.append(anthology_item['part'])
+                    durations.append(anthology_item['duration'])
+                    part_number.append(anthology_item['page'])
 
                 # Determine the most repeated duration
                 most_common_duration = Counter(durations).most_common(1)[0][0]
 
                 # Group files into streams
-                streams = []
-                current_stream = []
+                anthology_items_segmented_by_stream_day = []
+                single_stream_segments_list = []
                 current_duration = 0
 
                 # Define the target duration and tolerance (e.g., ±10 seconds)
                 target_duration = most_common_duration
                 tolerance = 10  # ±10 seconds
-                for i, file in enumerate(video_files):
-                    file_path = file
-                    duration_seconds = durations[i]
+                for index, item_name in enumerate(anthology_item_names_list):
+                    duration_seconds = durations[index]
                     
 
-                    current_stream.append(file_path)
+                    single_stream_segments_list.append(item_name)
                     current_duration = duration_seconds
                     
                         
 
                     # Check if the current duration is NOT approximately the target duration (± tolerance)
                     if (target_duration != current_duration ):
-                        streams.append(current_stream)
-                        current_stream = []
+                        anthology_items_segmented_by_stream_day.append(single_stream_segments_list)
+                        single_stream_segments_list = []
                         current_duration = 0
 
                 # If there are remaining files in the current stream, add them
-                if current_stream:
-                    streams.append(current_stream)
+                if single_stream_segments_list:
+                    anthology_items_segmented_by_stream_day.append(single_stream_segments_list)
 
                 # Print the streams for verification
-                print(streams + [' '] + [url])
-                # for i, stream in enumerate(streams):
-                #     print(f"Stream {i+1}:")
-                #     for file in stream:
-                #         print(f"  {file}  ")
+                # print(anthology_items_segmented_by_stream_day + [' '] + [url])
+                p_counter = 1
+                with open('./grouped.txt', 'a') as f:
+                    for i, stream in enumerate(anthology_items_segmented_by_stream_day):
+                        f.write(f"Stream {i+1}:\n")
+                        
+                        for j, file in enumerate(stream):
+                            # print(f"  {file} https://www.bilibili.com/video/{url[url.find('B'):].strip() if '=' in url else url.strip()}?p={ part_number[i] } ")
+                            
+                                f.write(f"  {file} https://www.bilibili.com/video/{url[url.find('B'):].strip() if '=' in url else url.strip()}?p={p_counter } \n")
+                                p_counter += 1
+
+                        
+                        
 
 # Example usage
 process_urls('/home/ubuntu/links/links.txt')

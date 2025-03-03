@@ -1,4 +1,4 @@
-1 https://www.bilibili.com/video/BV1SA411x7mG?p=1
-2 https://www.bilibili.com/video/BV1SA411x7mG?p=2
-3 https://www.bilibili.com/video/BV1SA411x7mG?p=3
-4 https://www.bilibili.com/video/BV1SA411x7mG?p=4
+https://www.bilibili.com/video/BV1SA411x7mG?p=1
+https://www.bilibili.com/video/BV1SA411x7mG?p=2
+https://www.bilibili.com/video/BV1SA411x7mG?p=3
+https://www.bilibili.com/video/BV1SA411x7mG?p=4

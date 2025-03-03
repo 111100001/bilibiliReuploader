@@ -1,3 +1,3 @@
-1 https://www.bilibili.com/video/BV1UJ411k72i?p=1
-2 https://www.bilibili.com/video/BV1UJ411k72i?p=2
-3 https://www.bilibili.com/video/BV1UJ411k72i?p=3
+https://www.bilibili.com/video/BV1UJ411k72i?p=1
+https://www.bilibili.com/video/BV1UJ411k72i?p=2
+https://www.bilibili.com/video/BV1UJ411k72i?p=3

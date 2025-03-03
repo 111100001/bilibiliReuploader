@@ -1,4 +1,4 @@
-1 https://www.bilibili.com/video/BV1k54y1Q77Z?p=1
-2 https://www.bilibili.com/video/BV1k54y1Q77Z?p=2
-3 https://www.bilibili.com/video/BV1k54y1Q77Z?p=3
-4 https://www.bilibili.com/video/BV1k54y1Q77Z?p=4
+https://www.bilibili.com/video/BV1k54y1Q77Z?p=1
+https://www.bilibili.com/video/BV1k54y1Q77Z?p=2
+https://www.bilibili.com/video/BV1k54y1Q77Z?p=3
+https://www.bilibili.com/video/BV1k54y1Q77Z?p=4

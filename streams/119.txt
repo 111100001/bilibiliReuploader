@@ -1,3 +1,3 @@
-27 https://www.bilibili.com/video/BV19f4y1t7Df?p=1
-2 https://www.bilibili.com/video/BV19f4y1t7Df?p=2
-3 https://www.bilibili.com/video/BV19f4y1t7Df?p=3
+https://www.bilibili.com/video/BV19f4y1t7Df?p=1
+https://www.bilibili.com/video/BV19f4y1t7Df?p=2
+https://www.bilibili.com/video/BV19f4y1t7Df?p=3

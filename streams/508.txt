@@ -1,6 +1,6 @@
-1 https://www.bilibili.com/video/BV1Yi4y187Uv?p=1
-2 https://www.bilibili.com/video/BV1Yi4y187Uv?p=2
-3 https://www.bilibili.com/video/BV1Yi4y187Uv?p=3
-4 https://www.bilibili.com/video/BV1Yi4y187Uv?p=4
-5 https://www.bilibili.com/video/BV1Yi4y187Uv?p=5
-6 https://www.bilibili.com/video/BV1Yi4y187Uv?p=6
+https://www.bilibili.com/video/BV1Yi4y187Uv?p=1
+https://www.bilibili.com/video/BV1Yi4y187Uv?p=2
+https://www.bilibili.com/video/BV1Yi4y187Uv?p=3
+https://www.bilibili.com/video/BV1Yi4y187Uv?p=4
+https://www.bilibili.com/video/BV1Yi4y187Uv?p=5
+https://www.bilibili.com/video/BV1Yi4y187Uv?p=6

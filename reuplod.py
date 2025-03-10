@@ -3,6 +3,7 @@ import subprocess
 from internetarchive import upload
 import shutil
 import re
+from tubeup.TubeUp import TubeUp
 
 LAST_PROCESSED_FILE = "last_processed.txt"
 
@@ -30,19 +31,13 @@ def extract_links(file_path):
     return links
 
 # Step 2: Download videos using yt-dlp
-def download_videos(links, output_dir="videos"):
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+tu = TubeUp(verbose=True)
+
+def download_videos(links):
+ 
+    set_of_downloaded_videos= tu.get_resource_basenames(links)
+    print(set_of_downloaded_videos)
     
-    for link in links:
-        command = [
-            "yt-dlp",
-            "-o", f"{output_dir}/%(title)s.%(ext)s",
-            link,
-            "--download-archive", "archive.log",
-            "-S", "+size,+br,+res,+fps"
-        ]
-        subprocess.run(command)
         
 
 # Step 3: Concatenate videos using ffmpeg
@@ -119,19 +114,19 @@ def sort_files_numerically(files):
 
 import re
 
-def extract_and_join_identifiers(file_path):
-    identifiers = []
+def extract_and_join_part_numbers(file_path):
+    part_numbers = []
     with open(file_path, 'r') as file:
         for line in file:
             match = re.search(r'\b\d+\b', line)
             if match:
-                identifiers.append(match.group())
-    return ''.join(identifiers)
+                part_numbers.append(match.group())
+    return ''.join(part_numbers)
 
 # Main function to process each file one at a time
 def main():
     # Directory containing text files with video links
-    directory = "/home/ubuntu/links/streams"
+    directory = "/home/ubuntu/bilibiliReuploader/streams"
     
     # Get list of files and sort them numerically
     files = [f for f in os.listdir(directory) if f.endswith(".txt")]
@@ -160,30 +155,31 @@ def main():
             # Step 2: Download videos
             print("Downloading videos...")
             video_dir = f"videos_{filename[:-4]}"  # Unique folder for each file
-            download_videos(video_links, video_dir)
+            tu.dir_path = video_dir
+            download_videos(video_links)
             print("Download complete.")
             
             # Step 3: Concatenate videos
             print("Concatenating videos...")
             output_file = f"output_{filename[:-4]}.mp4"  # Unique output file for each file
             concat_list_file = f"concat_list_{filename[:-4]}.txt"  # Unique concat list for each file
-            concatenate_videos(video_dir, output_file)
+            concatenate_videos( f"{video_dir}/downloads", output_file)
             print("Concatenation complete.")
             
             # Step 4: Upload to Internet Archive
-            print("Uploading to Internet Archive...")
-            identifier = extract_and_join_identifiers(file_path)
-            title = f"{identifier}-{filename[:-4]}-BiliBili"
+            # print("Uploading to Internet Archive...")
+            part_numbers = extract_and_join_part_numbers(file_path)
+            title = f"{part_numbers}-{filename[:-4]}-BiliBili"
             description = f"A collection of videos downloaded from Bilibili and concatenated into a single file from {filename}."
-            upload_to_archive(output_file, title, description)
-            print("Upload complete.")
+            # upload_to_archive(output_file, title, description)
+            # print("Upload complete.")
             
             # Step 5: Cleanup
-            print("Cleaning up files...")
-            cleanup(video_dir, concat_list_file, output_file)
-            print("Cleanup complete.")
+            # print("Cleaning up files...")
+            # cleanup(video_dir, concat_list_file, output_file)
+            # print("Cleanup complete.")
             
-            print(f"Finished processing file: {filename}\n")
+            # print(f"Finished processing file: {filename}\n")
             
             # Save the last processed file
             save_last_processed(filename)

@@ -1,6 +1,5 @@
 import os
 import subprocess
-from urllib.parse import urlparse
 from internetarchive import upload
 import shutil
 import re
@@ -60,16 +59,6 @@ def concatenate_videos(video_dir, output_file="output.mp4"):
     ]
     subprocess.run(command)
 
-# Step 4: Upload to Internet Archive
-# def upload_to_archive(file_path, title, description, collection="opensource"):
-#     item = upload(f"{title}", files=[file_path], metadata={
-#         "title": title,
-#         "description": description,
-#         "collection": collection,
-#         "mediatype": "movies",
-#     }, retries=9001,
-#                     request_kwargs=dict(timeout=(9001, 9001)), verbose=True)
-#     return item
 
 def upload_to_archive(file_path, title, description, collection="opensource"):
     item = upload(f"{title}", files=[file_path], metadata={
@@ -176,13 +165,6 @@ def jsoner(json_file):
         title += video['title'] + ' '
         webpage_url += video['webpage_url'] + ' '
     
-        
-    print(f"Display ID: {display_id}")
-    print(f"Title: {title}")
-    print(f"Webpage URL: {webpage_url}")
-    print(f"Extractor: {extractor}")
-    print(f"Extractor Key: {extractor_key}")
-    print(f"Upload Date: {upload_date}")
 
     new_data = {
         "extractor": extractor,
@@ -252,14 +234,7 @@ def main():
             concatenate_videos( f"{video_dir}/downloads", f"{video_dir}/downloads/{output_file}")
             print("Concatenation complete.")
             
-            # Step 4: Upload to Internet Archive
-            # print("Uploading to Internet Archive...")
-            #part_numbers = extract_and_join_part_numbers(file_path)
-            #title = f"{part_numbers}-{filename[:-4]}-BiliBili"
-            #description = f"A collection of videos downloaded from Bilibili and concatenated into a single file from {filename}."
-            # upload_to_archive(output_file, title, description)
-            # print("Upload complete.")
-            # Example usage
+            
             input_directory = f"/home/ubuntu/bilibiliReuploader/{video_dir}/downloads"  # Directory containing JSON files
             output_json_file = f"/home/ubuntu/bilibiliReuploader/{video_dir}/downloads/{output_file}.info.json"  # Output file path
 
@@ -271,7 +246,7 @@ def main():
 
             
             # Step 5: Cleanup
-            # print("Cleaning up files...")
+            print("Cleaning up files...")
             cleanup(video_dir, concat_list_file, output_file)
             print("Cleanup complete.")
             

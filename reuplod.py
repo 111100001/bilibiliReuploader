@@ -26,7 +26,9 @@ def extract_links(file_path):
     links = []
     with open(file_path, 'r') as file:
         for line in file:
-                links.append(line)
+            match = re.search(r'https?://[^\s]+', line)
+            if match:
+                links.append(match.group())
     return links
 
 # Step 2: Download videos using yt-dlp
@@ -42,12 +44,24 @@ def download_videos(links):
 # Step 3: Concatenate videos using ffmpeg
 def concatenate_videos(video_dir, output_file="output.mp4"):
     concat_list_file = f"{video_dir}/concat_list.txt"
+    files = os.listdir(video_dir)
+
+    sorted_files = sorted(
+    files,
+    #key=lambda x: int(re.search(r'_p(\d+)', x).group(1)) if re.search(r'_p(\d+)', x) else float('inf')
+    key=lambda x: int(match.group(1)) if (match := re.search(r'_p(\d+)', x)) else float('inf')
+
+)
+
     print(os.listdir(video_dir))
     with open(concat_list_file, 'w') as f:
         #used sorted() to make sure the videos are in order when written in the file
-        for filename in sorted(os.listdir(video_dir)):
+        for filename in sorted_files:
             if filename.endswith(".mp4"):
-                f.write(f"file '{filename}'\n")
+                if filename.count('_') <= 1: #if the upload fails and i run the script again, do not add the concatenated file in the text file
+                    f.write(f"file '{filename}'\n")
+                    
+                
     
     command = [
         "ffmpeg","-n",
@@ -72,7 +86,7 @@ def upload_to_archive(file_path, title, description, collection="opensource"):
 
 
 # Step 5: Cleanup downloaded and concatenated files
-def cleanup(video_dir, concat_list_file, output_file):
+def cleanup(video_dir):
     # Delete the downloaded videos directory
     if os.path.exists(video_dir):
         try:
@@ -83,25 +97,6 @@ def cleanup(video_dir, concat_list_file, output_file):
     else:
         print(f"Directory {video_dir} does not exist.")
     
-    # Delete the concatenation list file
-    if os.path.exists(concat_list_file):
-        try:
-            os.remove(concat_list_file)
-            print(f"Deleted file: {concat_list_file}")
-        except Exception as e:
-            print(f"Error deleting file {concat_list_file}: {e}")
-    else:
-        print(f"File {concat_list_file} does not exist.")
-    
-    # Delete the concatenated video file
-    if os.path.exists(output_file):
-        try:
-            os.remove(output_file)
-            print(f"Deleted file: {output_file}")
-        except Exception as e:
-            print(f"Error deleting file {output_file}: {e}")
-    else:
-        print(f"File {output_file} does not exist.")
         
 # Function to sort filenames numerically
 def sort_files_numerically(files):
@@ -151,8 +146,16 @@ def strip_and_join_last_parts(urls):
     return '_'.join(last_parts).replace("\n","")
 
 def jsoner(json_file):
+    if not os.path.exists(json_file):
+        print(f"File {json_file} does not exist.")
+        return
     with open(json_file, 'r', encoding='utf-8') as f:
         original_data = json.load(f)
+    
+    if not isinstance(original_data, list):
+        print('Concatenated JSON exists already, not merging')
+        return
+    
     display_id= ""
     title=""
     webpage_url=""
@@ -230,7 +233,6 @@ def main():
             print("Concatenating videos...")
 
             output_file = f"{strip_and_join_last_parts(video_links)}_concatenated_{filename[:-4]}.mp4"  # Unique output file for each file
-            concat_list_file = f"concat_list_{filename[:-4]}.txt"  # Unique concat list for each file
             concatenate_videos( f"{video_dir}/downloads", f"{video_dir}/downloads/{output_file}")
             print("Concatenation complete.")
             
@@ -247,7 +249,7 @@ def main():
             
             # Step 5: Cleanup
             print("Cleaning up files...")
-            cleanup(video_dir, concat_list_file, output_file)
+            cleanup(video_dir)
             print("Cleanup complete.")
             
             print(f"Finished processing file: {filename}\n")

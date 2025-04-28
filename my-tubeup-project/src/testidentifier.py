@@ -1,6 +1,6 @@
+import re
 import json
-from internetarchive import upload
-from tubeup.utils import get_itemname
+import os
 
 # Path to the JSON file
 json_file_path = "/home/ubuntu/bilibiliReuploader/my-tubeup-project/src/1_2_3_concatenated_1.mp4.info.json"
@@ -61,4 +61,37 @@ def jsoner(json_file):
     print(f"Updated originial_data has been written to {json_file}")
     
 
-jsoner(json_file_path)
+def concatenate_videos(video_dir, output_file="output.mp4"):
+    concat_list_file = f"{video_dir}/concat_list.txt"
+    files = os.listdir(video_dir)
+
+    sorted_files = sorted(
+    files,  
+    #key=lambda x: int(re.search(r'_p(\d+)', x).group(1)) if re.search(r'_p(\d+)', x) else float('inf')
+    key=lambda x: int(match.group(1)) if (match := re.search(r'_p(\d+)', x)) else float('inf')
+
+)
+
+    print(os.listdir(video_dir))
+    with open(concat_list_file, 'w') as f:
+        #used sorted() to make sure the videos are in order when written in the file
+        for filename in sorted_files:
+
+            if filename.endswith(".mp4"):
+                if filename.count('_') <= 1: #if the upload fails and i run the script again, do not add the concatenated file in the text file
+                    f.write(f"file '{filename}'\n")
+                    print(f"file '{filename}'\n")
+                    
+                
+    
+    command = [  # noqa: F841
+        "ffmpeg","-n",
+        "-f", "concat",
+        "-safe", "0",
+        "-i", concat_list_file,
+        "-c", "copy",
+        output_file, "-dry-run"
+    ]
+    #subprocess.run(command)
+
+concatenate_videos("/home/ubuntu/bilibiliReuploader/my-tubeup-project/src/dd", "output.mp4")

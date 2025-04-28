@@ -1,6 +1,5 @@
 import os
 import subprocess
-from internetarchive import upload
 import shutil
 import re
 from tubeup.TubeUp import TubeUp
@@ -73,16 +72,6 @@ def concatenate_videos(video_dir, output_file="output.mp4"):
     ]
     subprocess.run(command)
 
-
-def upload_to_archive(file_path, title, description, collection="opensource"):
-    item = upload(f"{title}", files=[file_path], metadata={
-        "title": title,
-        "description": description,
-        "collection": collection,
-        "mediatype": "movies",
-    }, retries=9001,
-                    request_kwargs=dict(timeout=(9001, 9001)), verbose=True)
-    return item
 
 
 # Step 5: Cleanup downloaded and concatenated files

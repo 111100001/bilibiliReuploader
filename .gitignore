@@ -6,3 +6,5 @@ dirs.bak
 videos_*
 downloads
 last_processed.txt
+*.json
+*.txt

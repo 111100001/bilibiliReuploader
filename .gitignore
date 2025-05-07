@@ -5,3 +5,4 @@ dirs.bak
 *.mp4
 videos_*
 downloads
+last_processed.txt

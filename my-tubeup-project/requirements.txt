@@ -1,4 +1,0 @@
-TubeUp
-yt-dlp
-internetarchive
-python-dotenv

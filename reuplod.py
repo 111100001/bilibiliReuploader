@@ -219,7 +219,7 @@ def main():
                     
                     # Step 2: Download videos
                     print("Downloading videos...")
-                    video_dir = f"videos/videos_{filename[:-4]}"  # Unique folder for each file
+                    video_dir = f"videos/videos_{filename[:-4]}"  # exclude last 4 chars
                     tu.dir_path = video_dir
                     download_videos(video_links)
                     print("Download complete.")

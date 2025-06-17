@@ -36,7 +36,7 @@ tu = TubeUp(verbose=True)
 
 def download_videos(links):
  
-    set_of_downloaded_videos = tu.get_resource_basenames(links)
+    set_of_downloaded_videos = tu.get_resource_basenames(links, ignore_existing_item=True)
     
         
 
@@ -187,7 +187,7 @@ def jsoner(json_file):
 
 def main():
     # Directory containing text files with video links
-    directory = "/home/ubuntu/bilibiliReuploader/streams"
+    directory = "/home/ubuntu/bilibiliReuploader/streams/failed"
     
     # Get list of files and sort them numerically
     files = [f for f in os.listdir(directory) if f.endswith(".txt")]

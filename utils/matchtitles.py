@@ -119,7 +119,7 @@ def match_objects_by_date(file1, file2):
     dates2 = [(obj, normalize_date(obj.get("date", "").split()[0])) for obj in data2]
 
     # Filter out objects with invalid dates
-    dates1 = [(obj, date) for obj, date in dates1 if date and date.year == 2020]
+    dates1 = [(obj, date) for obj, date in dates1 if date]
     dates2 = [(obj, date) for obj, date in dates2 if date]
 
     # Extract just the dates from the second file for comparison
@@ -132,7 +132,31 @@ def match_objects_by_date(file1, file2):
         if closest_date:
             # Find the corresponding object in data2
             obj2 = next(obj for obj, date in dates2 if date == closest_date)
-            matched_pairs.append((obj1, obj2))
+
+            exact_dates = [obj for obj, date in dates2 if date == closest_date]
+
+            archived_len = round(float(obj1.get("files")[0].get("length"))/60/60, 1)
+            exact_date_durations = [(float((re.search(r'\d+\.?\d*',i.get("duration")).group(0))), i) for i in exact_dates]
+            
+            match = re.search(r'\d+\.?\d*', obj2.get("duration"))
+
+            if match:
+                tt_len = float(match.group())
+
+
+            if len(exact_date_durations) > 1:
+                smallest_diff = float('inf')
+                closest_obj = None
+                for i in exact_date_durations:
+                    diff = abs(i[0] - archived_len)
+                    if diff < smallest_diff:
+                        smallest_diff = diff
+                        closest_obj = i
+
+                if closest_obj is not None:
+                    matched_pairs.append((obj1, closest_obj[1]))
+            else:
+                matched_pairs.append((obj1,obj2))
 
     return matched_pairs
 
@@ -159,9 +183,9 @@ with open("matched.json", "w", encoding="utf-8") as f:
     json.dump(matched_compact, f, indent=4)
 count = 0
 
-for obj1, obj2 in matched:
-    print(
-        f"Matched:\nFile1: {obj1.get("metadata","").get("title","")} {obj1.get("metadata","").get("identifier","")} {round((float(obj1.get("files")[0].get("length"))/60/60), 1)} \nFile2: {obj2}\n"
-    )
-    count += 1
-print(count)
+# for obj1, obj2 in matched:
+#     print(
+#         f"Matched:\nFile1: {obj1.get("metadata","").get("title","")} {obj1.get("metadata","").get("identifier","")} {round((float(obj1.get("files")[0].get("length"))/60/60), 1)} \nFile2: {obj2}\n"
+#     )
+#     count += 1
+# print(count)

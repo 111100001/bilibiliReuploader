@@ -13,8 +13,8 @@ def get_metadata():
     with open("identifiers.json", "w", encoding="utf-8") as f:
         json.dump(lst, f, indent=4)
 
-    if os.path.exists("itemmeta.json"):
-        with open("itemmeta.json", "r", encoding="utf-8") as ids_file:
+    if os.path.exists("itemmetaa-backup.json"):
+        with open("itemmetaa-backup.json", "r", encoding="utf-8") as ids_file:
             ids_list = json.load(ids_file)
     else:
         ids_list = []

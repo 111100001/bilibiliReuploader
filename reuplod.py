@@ -35,8 +35,10 @@ def extract_links(file_path):
 tu = TubeUp(verbose=True)
 
 def download_videos(links):
- 
+
     set_of_downloaded_videos = tu.get_resource_basenames(links, ignore_existing_item=True)
+
+   
     
         
 
@@ -240,11 +242,11 @@ def main():
                     uploaded_file_names = tu.upload_ia(f"/home/ubuntu/bilibiliReuploader/{video_dir}/downloads/{output_file}")
                     print("Upload complete.")
 
-                    # Step 5: Cleanup
-                    if uploaded_file_names:
-                        print("Cleaning up files...")
-                        cleanup(video_dir)
-                        print("Cleanup complete.")
+                    # # Step 5: Cleanup
+                    # if uploaded_file_names:
+                    #     print("Cleaning up files...")
+                    #     cleanup(video_dir)[]
+                    #     print("Cleanup complete.")
                     
                     print(f"Finished processing file: {filename}\n")
                     

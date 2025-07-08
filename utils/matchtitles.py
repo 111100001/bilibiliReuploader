@@ -1,7 +1,6 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import re
-import math
 
 
 def parse_json(file_path):
@@ -18,7 +17,6 @@ def get_title(obj: dict):
 
 
 def get_date_from_title(obj):
-
     title = get_title(obj)
 
     extracted_date = "-1"
@@ -28,7 +26,6 @@ def get_date_from_title(obj):
     match = re.search(pattern, title)
 
     if match:  # if there is a regex match
-
         if (
             match.group("day")  # if the date is like 2020.02.23
             and match.group("dayrange") is None
@@ -36,7 +33,6 @@ def get_date_from_title(obj):
             and match.group("othermonth") is None
             and match.group("othernmonthnodot") is None
         ):
-
             extracted_date = match.group(0)
             return normalize_date(extracted_date)
 
@@ -46,7 +42,6 @@ def get_date_from_title(obj):
             day_match = re.search(r"p\d\d\s(\d\d?.?(/?\d?\d?))\s{0,1}?", title)
             day = ""
             if day_match is not None:
-
                 if day_match.group(
                     2
                 ):  # if group 2 doesnt exist, it returns an empty str appearntly
@@ -55,7 +50,6 @@ def get_date_from_title(obj):
                     day = day_match.group(1)
 
             extracted_date = f"{match.group('yearandmonth')}{day}"
-            
 
             return normalize_date(extracted_date)
 
@@ -75,12 +69,12 @@ def get_date_from_title(obj):
             if min_tuple[1] != month:
                 day = min_tuple[1]
             else:
-                if min_tuple[2] != '':
+                if min_tuple[2] != "":
                     day = min_tuple[2]
                 else:
                     day = min_tuple[1]
 
-            extracted_date = f"{match.group("yearandmonth")}{day}"
+            extracted_date = f"{match.group('yearandmonth')}{day}"
 
             return normalize_date(extracted_date)
     # else:
@@ -103,16 +97,11 @@ def normalize_date(date_str):
 def find_closest_match(date, dates_list):
     """Find the closest date in dates_list to the given date."""
     closest_date = None
-    smallest_diff = timedelta.max  # Initialize with a large difference
 
     for other_date in dates_list:
         if date == other_date:
             closest_date = other_date
             break
-        # diff = abs(date - other_date)
-        # if diff < smallest_diff:
-        #     smallest_diff = diff
-        #     closest_date = other_date
 
     return closest_date
 
@@ -146,14 +135,11 @@ def match_objects_by_date(file1, file2):
 
             archived_len = round(float(obj1.get("files")[0].get("length")) / 60 / 60, 1)
             exact_date_durations = [
-                (float((re.search(r"\d+\.?\d*", i.get("duration")).group(0))), i)
+                (float((re.search(r"\d+\.?\d*", i.get("duration")).group(0)) ) , i)
                 for i in exact_dates
             ]
 
-            match = re.search(r"\d+\.?\d*", obj2.get("duration"))
 
-            if match:
-                tt_len = float(match.group())
 
             if len(exact_date_durations) > 1:
                 smallest_diff = float("inf")
@@ -219,9 +205,7 @@ def match_objects_by_date_with_duration_window(file1, file2):
                 exact_duration_match = (obj2, date2, obj2_duration)
                 break
 
-        if (
-            False
-        ):  # exact_duration_match: #match by the duration only if the date is not the same
+        if False:  # exact_duration_match: #match by the duration only if the date is not the same
             # Found exact duration match within 3-day window
             matched_pairs.append(
                 (obj1, exact_duration_match[0], "exact_duration_3day_match")

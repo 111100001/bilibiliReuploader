@@ -44,7 +44,6 @@ async def main():
         data:list[dict] = json.load(f)
 
     info_dict = []
-    count = 0
 
     for datum in data:
         urls = geturls(datum)
@@ -59,7 +58,7 @@ async def main():
             durations += int(getdurations(info, part))
 
         durations_rouinded = round(float(durations) / 60 / 60, 1)
-        archived_duration = float(datum.get("duration"))
+        archived_duration = float(datum.get("duration",0))
         
         
 

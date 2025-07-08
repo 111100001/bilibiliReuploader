@@ -9,7 +9,7 @@ def get_titles():
     Fetches the titles of items from the Internet Archive.
     """
     # Search for items uploaded by a specific user
-    with open("itemmetaa.json", "r", encoding="utf-8") as f:
+    with open("itemmeta.json", "r", encoding="utf-8") as f:
         items = json.load(f)
 
     return items
@@ -35,6 +35,7 @@ def save_json(file_path, data):
 
 
 def normalize_date(date_str):
+    date_str = date_str.strip()
     """Convert a date string to a datetime object."""
     for fmt in ["%d/%b/%Y", "%Y-%m-%d", "%Y.%m.%d"]:
         try:
@@ -87,27 +88,26 @@ def get_date_from_title(obj):
             day = ""
             if day_match is not None:
 
-                if day_match.group(
-                    2
+                if (
+                    day_match.group(2)
                 ):  # if group 2 doesnt exist, it returns an empty str appearntly
                     day = day_match.group(2)
                 else:
                     day = day_match.group(1)
+            else:
+                print(f"cant find day match {day_match.group()}")
 
             extracted_date = f"{match.group('yearandmonth')}{day}"
+            
+            if normalize_date(extracted_date) is None:
+                print(title)
 
             return normalize_date(extracted_date)
 
         elif match.group("dayrange"):
             title = obj.get("metadata", {}).get("title")
 
-            p = re.findall(r"(p\d\d)\s(\d\d?.?(/?\d?\d?))(?=\s|$|\")", title)
-
-            # get_p_num = [re.search(r"\d+", i[0]).group(0) for i in p]
-            # min_p = min(get_p_num)
-            # print(p)
-            # print(get_p_num)
-            # print(min_p)
+            p = re.findall(r"(p\d\d)\s(\d\d?).?/?(\d?\d?)(?=\s|$|\")", title)
 
             def extract_p_num(x):
                 match = re.search(r"p(\d+)", x[0])
@@ -115,8 +115,19 @@ def get_date_from_title(obj):
 
             min_tuple = min(p, key=extract_p_num)
             day = min_tuple[1]
+            month = match.group("yearandmonth").split(".")[1]
+
+            if min_tuple[1] != month:
+                day = min_tuple[1]
+            else:
+                if min_tuple[2] != '':
+                    day = min_tuple[2]
+                else:
+                    day = min_tuple[1]
 
             extracted_date = f"{match.group("yearandmonth")}{day}"
+            print(extracted_date)
+            print(title)
 
             return normalize_date(extracted_date)
 
@@ -129,54 +140,60 @@ dates = [(obj, get_date_from_title(obj)) for obj in get_titles()]
 
 my_list = [(title.get("metadata", {}).get("title"), str(date)) for title, date in dates]
 
-# def process_titles(file_path):
-#     """Process all titles and save changes."""
-#     data = parse_json(file_path)
 
-#     for obj in data:
-#         result = get_date_from_title(obj)
-#         if result:
-#             print(f"Extracted date: {result} from: {get_title(obj)}")
-#         else:
-#             print(f"No date found in: {get_title(obj)}")
+def process_titles(file_path):
+    """Process all titles and save changes."""
+    data = parse_json(file_path)
 
-#     # Save all changes back to the file
-#     save_json("/home/ubuntu/bilibiliReuploader/fixedrange-itemmeta.json", data)
-#     print(f"File saved with all changes: {file_path}")
+    for obj in data:
+        result = get_date_from_title(obj)
+        if isinstance(result, datetime):
+            pass
+        else:
+            if "2019" not in obj.get("metadata").get("title"):
+                print(obj.get("metadata").get("title")+ '\n')
+                input_with_prefill(f"fix the date here: \n",obj.get("metadata").get("title"))
 
-
-# # Usage
-# if __name__ == "__main__":
-#     file_path = "/home/ubuntu/bilibiliReuploader/itemmeta.json"
-#     process_titles(file_path)
+    # Save all changes back to the file
+    save_json("/home/ubuntu/bilibiliReuploader/fixedrange-itemmeta.json", data)
+    print(f"File saved with all changes: {file_path}")
 
 
-# seen = set()
-# dupes = set()
-# titles = []
-# for title, item in my_list:
-#     if item in seen:
-        
-#         if item != "None":
-#             print(item)
-#             dupes.add(item)
-#             titles.append(title)
+# Usage
+if __name__ == "__main__":
+    file_path = "/home/ubuntu/bilibiliReuploader/itemmeta.json"
+    process_titles(file_path)
 
-#     else:
-#         seen.add(item)
 
-# print("Duplicates:", dupes)
-# print("titles", titles)
+def find_duplicate_titles(my_list):
+    """
+    Finds duplicate items in my_list and returns a set of duplicates and their titles.
+    """
+    seen = set()
+    dupes = set()
+    titles = []
+    for title, item in my_list:
+        if item in seen:
+            if item != "None":
+                print(item)
+                dupes.add(item)
+                titles.append(title)
+        else:
+            seen.add(item)
+    print("Duplicates:", dupes)
+    print("titles", titles)
+    return dupes, titles
 
-# for item in dates:
-#     if item[1] is None:
-#         print("---------------------")
-#         print(item[0].get("metadata", {}).get("title"))
-#         print("")
-#         print(item[1])
+def check_none_dates(dates):
+    for item in dates:
+        if item[1] is None:
+            print("---------------------")
+            print(item[0].get("metadata", {}).get("title"))
+            print("")
+            print(item[1])
+
 
 
 # with open("dates.json",'w', encoding='utf-8') as f:
 #     json.dump(dates,f, indent= 4)
 
-# %%

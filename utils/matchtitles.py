@@ -55,19 +55,14 @@ def get_date_from_title(obj):
                     day = day_match.group(1)
 
             extracted_date = f"{match.group('yearandmonth')}{day}"
+            
 
             return normalize_date(extracted_date)
 
         elif match.group("dayrange"):
             title = obj.get("metadata", {}).get("title")
 
-            p = re.findall(r"(p\d\d)\s(\d\d?.?(/?\d?\d?))(?=\s|$|\")", title)
-
-            # get_p_num = [re.search(r"\d+", i[0]).group(0) for i in p]
-            # min_p = min(get_p_num)
-            # print(p)
-            # print(get_p_num)
-            # print(min_p)
+            p = re.findall(r"(p\d\d)\s(\d\d?).?/?(\d?\d?)(?=\s|$|\")", title)
 
             def extract_p_num(x):
                 match = re.search(r"p(\d+)", x[0])
@@ -75,6 +70,15 @@ def get_date_from_title(obj):
 
             min_tuple = min(p, key=extract_p_num)
             day = min_tuple[1]
+            month = match.group("yearandmonth").split(".")[1]
+
+            if min_tuple[1] != month:
+                day = min_tuple[1]
+            else:
+                if min_tuple[2] != '':
+                    day = min_tuple[2]
+                else:
+                    day = min_tuple[1]
 
             extracted_date = f"{match.group("yearandmonth")}{day}"
 
@@ -261,7 +265,7 @@ def match_objects_by_date_with_duration_window(file1, file2):
 
 
 # Example usage
-file1 = "/home/ubuntu/bilibiliReuploader/itemmetaa-backup.json"
+file1 = "/home/ubuntu/bilibiliReuploader/itemmeta.json"
 file2 = "/home/ubuntu/bilibiliReuploader/scraper/tracker.json"
 
 matched = match_objects_by_date_with_duration_window(file1, file2)

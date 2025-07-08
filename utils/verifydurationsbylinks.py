@@ -64,7 +64,8 @@ async def main():
         
 
         if abs(durations_rouinded - archived_duration) >= 0.5:
-            info_dict.append({"item":datum, "bilibiliduration": durations_rouinded, })
+            datum["bilibiliduration"] = durations_rouinded
+            info_dict.append(datum)
             print(f"{durations_rouinded} = {archived_duration}")
             
 

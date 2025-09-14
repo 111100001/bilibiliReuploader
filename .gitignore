@@ -9,6 +9,9 @@ last_processed.txt
 *.json
 *.txt
 
+# Testing files
+test_refactoring.py
+
 # Python
 __pycache__/
 *.py[cod]
